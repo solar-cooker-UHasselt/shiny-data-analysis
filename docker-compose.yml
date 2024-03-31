@@ -1,0 +1,9 @@
+---
+version: "3"
+services:
+  shiny:
+    image: ghcr.io/solar-cooker-uhasselt/shiny-data-analysis:latest
+    container_name: shiny-app
+    ports:
+      - 3838:3838
+    restart: always
