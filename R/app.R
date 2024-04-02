@@ -10,6 +10,8 @@
 # Libraries #
 #############
 
+# test 
+
 library(shiny)
 library(shinydashboard)
 library(dplyr)
@@ -20,7 +22,6 @@ library(httr)
 library(lubridate)
 library(ggplot2)
 rm(list = ls())
-
 
 ############
 # Shiny UI #
@@ -154,20 +155,20 @@ ui <- fluidPage(tags$head(
                tags$div(
                  id = "info_list",
                  tags$ul(
-                   tags$li("Date (calendar time): metaData$TestDate"),
-                   tags$li("Volume of water: metaData$M"),
-                   tags$li("Capacity of water: metaData$Cv"),
-                   tags$li("Brand of the cooker: metaData$Cooker"),
-                   tags$li("Type of device: metaData$Tdevice"),
-                   tags$li("Number of the testing station: metaData$TestStation"),
-                   tags$li("Number of the testing probe: metaData$TempSensor"),
-                   tags$li("Type of cooking vessel: metaData$Pot"),
-                   tags$li("Person performing the experiment: metaData$Operator"),
-                   tags$li(" Latitude of the testing site: metaData$Latitude"),
-                   tags$li("Longitude of the testing site: metaData$Longitude"),
-                   tags$li("Presence of absence of plastic bag around the pot: metaData$PlasticBag"),
-                   tags$li("Identification of data from the testing station: metaData.data$Datafile"),
-                   tags$li("Picture of the device: metaData$CookerPic")
+                   tags$li("Date (calendar time): TestDate"),
+                   tags$li("Volume of water: M"),
+                   tags$li("Capacity of water: Cv"),
+                   tags$li("Brand of the cooker: Cooker"),
+                   tags$li("Type of device: Tdevice"),
+                   tags$li("Number of the testing station: TestStation"),
+                   tags$li("Number of the testing probe: TempSensor"),
+                   tags$li("Type of cooking vessel: Pot"),
+                   tags$li("Person performing the experiment: Operator"),
+                   tags$li(" Latitude of the testing site: Latitude"),
+                   tags$li("Longitude of the testing site: Longitude"),
+                   tags$li("Presence of absence of plastic bag around the pot: PlasticBag"),
+                   tags$li("Identification of data from the testing station: Datafile"),
+                   tags$li("Picture of the device: CookerPic")
                  )
                )
         ),
@@ -206,9 +207,18 @@ ui <- fluidPage(tags$head(
   tabPanel(
     "Single value measurement",
     mainPanel(
-      p("blabla")
+      p("under construction")
     )
   ),
+
+# Fourth TabPanel with extra subtabs for additional information
+#-------------------------------------------------------------------------------
+  navbarMenu("More information",
+             tabPanel("Protocol",
+                      uiOutput("markdownoutput")
+                      
+                      ) # end of TabPanel
+             ),
 
 
 inverse = T
@@ -905,6 +915,11 @@ output$Plot33 <- renderPlot({
                        labels = c("Air Pressure", "Relative Humidity"))  # Define colors and labels
   
 })
+
+output$markdownoutput <- renderUI({
+  includeMarkdown("protocol.html")
+})
+
 }
 
 #######################
