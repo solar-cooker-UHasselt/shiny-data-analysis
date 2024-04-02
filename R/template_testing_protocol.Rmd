@@ -1,0 +1,250 @@
+---
+title: 'Solar Cooker: testing report PROTOTYPE XXX '
+author: "Jonas Meijerink"
+date: "06 march 2024"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: cosmo
+    toc: yes
+    toc_float:
+      collapsed: yes
+    df_print: paged
+fontsize: 14pt
+mainfont: Arial
+header-includes: \usepackage{amsmath}
+---
+
+```{r echo=FALSE, message=FALSE, warning=TRUE}
+
+############################################################
+# R script to analyse the performance of the solar cooker  #
+# according to the protocol ASAE S580.1 JAN03              #
+#                                                          #
+# Author: Jonas Meijerink                                  #
+# Date: March 2024                                         #
+# *This Rmd file is based on the work of Pardon Masuka.*   #
+############################################################
+
+
+#############
+# Libraries #
+#############
+
+library(gridExtra)
+library(ggplot2)
+library(tidyverse)
+
+```
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+#################
+# Load the data #
+#################
+
+# this R script should be in the same file
+source("data_engineering.R")
+
+
+# load the file of interest
+wd = "/Users/jonas/OneDrive/Documenten/master_statistics1/Solar cooker/Data/Lubumbashi_winter_2023"
+teststation_data = paste0(wd,"/18123245.csv")
+meta_data = paste0(wd,"/PEPUNILU202318123245.csv")
+
+# generate the correct datafile in intervals of 10minutes
+day1 = process_fun(teststation_file = teststation_data,  metadata_file = meta_data, format = "long")
+
+# Calculate all the variables described in the protocol.
+day1 <- day1 %>%
+  mutate(Td_temp_diff = Temp_pot - day1[day1$Pot_ID==2,]$Temp_pot) %>%
+  mutate(Pi_cooking_power = ((End_temp_pot - Start_temp_pot)*M*Cv)/600) %>%
+  mutate(Ps_std_cooking_power = Pi_cooking_power*(700/Solar_irr))
+
+# select only the data of pot 1
+day1<-day1[day1$Pot_ID==1,]
+
+# delete the last row this is an incomplete interval
+day1<-day1[-nrow(day1),]
+
+```
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+##########################
+# Load the data of day 2 #
+##########################
+
+#wd = "/Users/jonas/OneDrive/Documenten/master_statistics1/Solar cooker/Data/Lubumbashi_winter_2023"
+#teststation_data = paste0(wd,"/19122316.csv")
+#meta_data = paste0(wd,"/PEPUNILU202319122316.csv")
+
+
+# generate the correct datafile in intervals of 10minutes
+#newdat2 = process_fun(teststation_file = teststation_data,  metadata_file = meta_data, format = "long")
+#newdat2
+
+# !!!!!!!!!!!!!!!!!!!!!!! Choose the correct Pot_ID !!!!!!!!!!!!!!!!!!!!!!!!!! #
+pot=1 # or 2/3
+
+# Combine the data of the 2 datasets
+powerdata<-day1
+
+```
+
+
+*This template will automatic update all the values according to the new data file and the choice of the pot. Only the red text should be changed manually!*
+
+## Introduction
+
+In this report the testing has been described of the prototype **`r unique(powerdata$Cooker)`** on **`r unique(powerdata$TestDate)`**. The objective of the test was to evaluate the performance of this prototype. The results were analysed to determine the effectiveness of the solar cooker according to the ASAE Standard S-580.1 .
+
+**Test set up:**
+
+-   [The periods when the shadow formed and the box had to be moved were also recorded as the tests went on.]{style="color: red;"}
+-   [This was done on the rooftop of the Hasselt University Campus Diepenbeek. The cooker was placed in an open area with no shade, and the ambient temperature was measured using a digital thermometer, the wind speed measured using an anemometer and the solar insolation was measured by the pyranometer.]{style="color: red;"}
+
+**Uncontrolled (weather) variables:**
+
+-   The testing was carried out on a day with ambient temperatures ranging from **`r min(powerdata$Outdoor_temp)`** and **`r max(powerdata$Outdoor_temp)`** °C.
+-   The wind speed was measured at **`r powerdata$Wind_speed[1]`** m/s at the start.
+-   The insolation was also measured at **`r powerdata$Solar_irr[1]`** $W/m^2$ at the start.
+
+-   The ambient temperature was also measured at **`r powerdata$Outdoor_temp[1]`** °C at the start.
+
+**Controlled (cooker) variables:**
+
+-   The pot was filled with **`r unique(powerdata$M[pot])`** kg of water. 
+-   The temperature of the water was measured every **10** minutes for **`r length(powerdata)`** intervals.
+
+**Limitations:**
+
+-   [We didn't measure ....]{style="color: red;"}
+
+## Single measure of performance
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+##########################################################
+# Simple linear regression of standardized cooking power #
+##########################################################
+
+linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff,data = powerdata)
+
+summary(linear_model)
+new <- data.frame(Td_temp_diff  = c(50))
+output<-predict(linear_model, new, se.fit = TRUE)[1]
+```
+
+A plot of the relationship between standardized cooking power and temperature difference is shown.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#plot standardized cooking power against temp diff 
+
+ggplot(data = powerdata, 
+       aes(x = Td_temp_diff, y = Ps_std_cooking_power)) + 
+  geom_point() +
+  labs(title = "", 
+  x = "Temperature Difference (°C)", y = "Standardised Cooking Power") +
+  geom_smooth(method = "lm", se = TRUE, color = "blue")
+```
+
+The value for standardized cooking power, $P_s$ (W), is computed for a temperature difference, $T_d$, of 50 °C using the regression relationship found:
+
+$$P_{s}(50) = `r output` W.$$
+
+## References
+
+Funk, P.A. 2000. Evaluating the international standard procedure for testing solar cookers and reporting performance.Solar Energy 68(1):1--7.
+
+Mullick S.C., Kandpal T.C., and Saxena A.K. 1987. Thermal test procedure for box-type solar cookers. Solar Energy 39(4):353--360.
+
+## Appendix
+
+### Data exploration
+
+Let's start with a short data exploration to check the behaviour of all covariates.
+
+```{r echo=FALSE}
+
+
+a1<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Temp_pot,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Temperature (°C)")+theme_minimal()+labs(title = "Temperature inside the pot")
+a2<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Outdoor_temp,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Temperature (°C)")+theme_minimal()+labs(title = "Ambient temperature")
+grid.arrange(a1,a2)
+b<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Wind_speed,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Wind speed (m/s)")+theme_minimal()+labs(title = "Wind speed")
+c<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Air_pressure,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Air pressure (hPa)")+theme_minimal()+labs(title = "Air pressure")
+grid.arrange(b,c)
+d<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Rel_hum,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Relative humidity (%)")+theme_minimal()+labs(title = "Relative humidity")
+e<-ggplot(data = powerdata)+geom_point(aes(x=Time_period,y=Solar_irr,col=Experiment_ID))+xlab("Intervals of 10 minutes")+ylab("Solar irradiance (W/mA^2)")+theme_minimal()+labs(title = "Solar irradiance")
+grid.arrange(d,e)
+```
+
+### Protocol
+
+Below we calculate the given measures using the formulas in the ASAE S580 JAN03 "Testing and Reporting Solar Cooker Performance protocol".
+
+**Cooking Power**
+
+The change in water temperature for each non-overlapping ten-minute interval was multiplied by the mass and specific heat capacity of the water contained in the cooking vessel(s). This product shall be divided by the 600 seconds contained in a ten-minute interval, as:
+
+$$P_i = \frac{(T_2 - T_1)\cdot M\cdot C_{v}}{600}$$ where:
+
+-   $P_{i}$ cooking power (W) for interval i
+-   $T_2$ final water temperature (°C)
+-   $T_1$ initial water temperature (°C)
+-   $M$ water mass (kg)
+-   $C_{v}$ heat capacity of water (4186 J/[kg·°C])
+
+**Interval Averages**
+
+The average insolation, average ambient temperature, and average cooking vessel contents temperature were calculated in each interval.
+
+**Standardized Cooking Power**
+
+The cooking power for each interval was corrected to a standard insolation of 700 $W/m^2$ by multiplying the interval observed cooking power by 700 $W/m^2$ and dividing by the interval average insolation recorded during the corresponding interval.
+
+$$P_{s} = P_{i}\cdot\frac{700}{I_{i}}$$ where:
+
+-   $P_{s}$ standardized cooking power (W)
+-   $P_{i}$ interval cooking power (W), as calculated above
+-   $I_{i}$ interval average solar insolation (W/m2)
+
+**Temperature Difference**
+
+Ambient temperature for each interval is to be subtracted from the average cooking vessel contents temperature for each corresponding interval:
+
+$$T_{d} = T_{w} - T_{a}$$
+
+where:
+
+-   $T_{d}$ temperature difference (°C)
+-   $T_{w}$ water temperature (°C)
+-   $T_{a}$ ambient air temperature (°C)
+
+**Linear regression**
+
+```{r message=TRUE, warning=TRUE, include=FALSE}
+##########################################################
+# Simple linear regression of standardized cooking power #
+##########################################################
+
+linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff,data = powerdata)
+
+summary(linear_model)
+```
+
+A linear regression of the plotted points shall be used to find the relationship between cooking power and temperature difference in terms of intercept, a (W), and slope, b (W/ °C):
+
+$$P_{s} = a + b \cdot T_{d}$$.
+
+The coefficient of determination $r^2$ or proportion of variation in cooking power that can be attributed to the relationship found by regression was **`r summary(linear_model)$r.squared`**. A value higher than 0.75 is recommended according the protocol. The linear relationship is here given by: $$P_{s} = `r linear_model$coefficients[1]` + `r linear_model$coefficients[2]` \cdot T_{d}$$
+
+### Linear regression
+
+```{r echo=FALSE}
+summary(linear_model)
+```
+
+### Data
+
+```{r echo=FALSE}
+powerdata
+```
