@@ -1,5 +1,5 @@
 ---
-title: 'Solar Cooker: testing report PROTOTYPE XXX '
+title: "Solar Cooker: testing report PROTOTYPE XXX "
 author: "Jonas Meijerink"
 date: "06 march 2024"
 output:
@@ -91,8 +91,7 @@ powerdata<-day1
 
 ```
 
-
-*This template will automatic update all the values according to the new data file and the choice of the pot. Only the red text should be changed manually!*
+_This template will automatic update all the values according to the new data file and the choice of the pot. Only the red text should be changed manually!_
 
 ## Introduction
 
@@ -100,25 +99,25 @@ In this report the testing has been described of the prototype **`r unique(power
 
 **Test set up:**
 
--   [The periods when the shadow formed and the box had to be moved were also recorded as the tests went on.]{style="color: red;"}
--   [This was done on the rooftop of the Hasselt University Campus Diepenbeek. The cooker was placed in an open area with no shade, and the ambient temperature was measured using a digital thermometer, the wind speed measured using an anemometer and the solar insolation was measured by the pyranometer.]{style="color: red;"}
+- [The periods when the shadow formed and the box had to be moved were also recorded as the tests went on.]{style="color: red;"}
+- [This was done on the rooftop of the Hasselt University Campus Diepenbeek. The cooker was placed in an open area with no shade, and the ambient temperature was measured using a digital thermometer, the wind speed measured using an anemometer and the solar insolation was measured by the pyranometer.]{style="color: red;"}
 
 **Uncontrolled (weather) variables:**
 
--   The testing was carried out on a day with ambient temperatures ranging from **`r min(powerdata$Outdoor_temp)`** and **`r max(powerdata$Outdoor_temp)`** °C.
--   The wind speed was measured at **`r powerdata$Wind_speed[1]`** m/s at the start.
--   The insolation was also measured at **`r powerdata$Solar_irr[1]`** $W/m^2$ at the start.
+- The testing was carried out on a day with ambient temperatures ranging from **`r min(powerdata$Outdoor_temp)`** and **`r max(powerdata$Outdoor_temp)`** °C.
+- The wind speed was measured at **`r powerdata$Wind_speed[1]`** m/s at the start.
+- The insolation was also measured at **`r powerdata$Solar_irr[1]`** $W/m^2$ at the start.
 
--   The ambient temperature was also measured at **`r powerdata$Outdoor_temp[1]`** °C at the start.
+- The ambient temperature was also measured at **`r powerdata$Outdoor_temp[1]`** °C at the start.
 
 **Controlled (cooker) variables:**
 
--   The pot was filled with **`r unique(powerdata$M[pot])`** kg of water. 
--   The temperature of the water was measured every **10** minutes for **`r length(powerdata)`** intervals.
+- The pot was filled with **`r unique(powerdata$M[pot])`** kg of water.
+- The temperature of the water was measured every **10** minutes for **`r length(powerdata)`** intervals.
 
 **Limitations:**
 
--   [We didn't measure ....]{style="color: red;"}
+- [We didn't measure ....]{style="color: red;"}
 
 ## Single measure of performance
 
@@ -137,12 +136,12 @@ output<-predict(linear_model, new, se.fit = TRUE)[1]
 A plot of the relationship between standardized cooking power and temperature difference is shown.
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-#plot standardized cooking power against temp diff 
+#plot standardized cooking power against temp diff
 
-ggplot(data = powerdata, 
-       aes(x = Td_temp_diff, y = Ps_std_cooking_power)) + 
+ggplot(data = powerdata,
+       aes(x = Td_temp_diff, y = Ps_std_cooking_power)) +
   geom_point() +
-  labs(title = "", 
+  labs(title = "",
   x = "Temperature Difference (°C)", y = "Standardised Cooking Power") +
   geom_smooth(method = "lm", se = TRUE, color = "blue")
 ```
@@ -187,11 +186,11 @@ The change in water temperature for each non-overlapping ten-minute interval was
 
 $$P_i = \frac{(T_2 - T_1)\cdot M\cdot C_{v}}{600}$$ where:
 
--   $P_{i}$ cooking power (W) for interval i
--   $T_2$ final water temperature (°C)
--   $T_1$ initial water temperature (°C)
--   $M$ water mass (kg)
--   $C_{v}$ heat capacity of water (4186 J/[kg·°C])
+- $P_{i}$ cooking power (W) for interval i
+- $T_2$ final water temperature (°C)
+- $T_1$ initial water temperature (°C)
+- $M$ water mass (kg)
+- $C_{v}$ heat capacity of water (4186 J/[kg·°C])
 
 **Interval Averages**
 
@@ -203,9 +202,9 @@ The cooking power for each interval was corrected to a standard insolation of 70
 
 $$P_{s} = P_{i}\cdot\frac{700}{I_{i}}$$ where:
 
--   $P_{s}$ standardized cooking power (W)
--   $P_{i}$ interval cooking power (W), as calculated above
--   $I_{i}$ interval average solar insolation (W/m2)
+- $P_{s}$ standardized cooking power (W)
+- $P_{i}$ interval cooking power (W), as calculated above
+- $I_{i}$ interval average solar insolation (W/m2)
 
 **Temperature Difference**
 
@@ -215,9 +214,9 @@ $$T_{d} = T_{w} - T_{a}$$
 
 where:
 
--   $T_{d}$ temperature difference (°C)
--   $T_{w}$ water temperature (°C)
--   $T_{a}$ ambient air temperature (°C)
+- $T_{d}$ temperature difference (°C)
+- $T_{w}$ water temperature (°C)
+- $T_{a}$ ambient air temperature (°C)
 
 **Linear regression**
 

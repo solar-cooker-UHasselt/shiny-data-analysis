@@ -14,15 +14,16 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 RUN install2.r --error --skipinstalled \
-    shiny \
     shinydashboard \
     dplyr \
     stringr \
     XML \
     rvest \
-    httr \
     lubridate \
     ggplot2
+
+RUN mkdir -p /srv/shiny-server/ && \
+    chmod 777 /srv/shiny-server/
 
 COPY R/* /srv/shiny-server/
 
