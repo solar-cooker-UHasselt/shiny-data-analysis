@@ -43,11 +43,15 @@ ui <- fluidPage(tags$head(
                 border:1px solid rgba(0,0,0,0.15);
                 border-radius:4px; 
                 font-family:monospace;
+                
             }"))),
+  skin = "blue",
   
   navbarPage(
     "Solar Cooker",
+    theme = "bootstrap.css",
     id = "main_navbar",
+    
 
 # First Tabpanel
 #-------------------------------------------------------------------------------    
@@ -205,13 +209,24 @@ ui <- fluidPage(tags$head(
 # Third Tabpanel
 #-------------------------------------------------------------------------------
   tabPanel(
-    "Single value measurement",
+    "Single measure of performance",
     mainPanel(
-      p("under construction")
+      h2("Single measure of performance"),
+      textOutput("output_text1"),
+      plotOutput("Plotlinearreg")
     )
   ),
 
-# Fourth TabPanel with extra subtabs for additional information
+# Fourth Tabpanel
+#-------------------------------------------------------------------------------
+tabPanel(
+  "Survival Analysis",
+  mainPanel(
+    p("under construction")
+  )
+),
+
+# Fith TabPanel with extra subtabs for additional information
 #-------------------------------------------------------------------------------
   navbarMenu("More information",
              tabPanel("Protocol",
@@ -266,7 +281,7 @@ server <- function(input, output) {
       
       # Create an experiment ID based on timestamp
       #--------------------------------------------
-      dat_long$Date = as.Date(with(dat_long, paste(Year, Month, Day, sep="-")))
+      dat_long$Date = as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format="%Y %m %d %H %M %S")
       dat_long$Experiment_ID = sub("*.csv","",sub(".*/", "", input$namefile1))
       dat_long$Record = with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
       dat_long$Timestamp = ymd_hms(with(dat_long, 
@@ -425,7 +440,7 @@ server <- function(input, output) {
       
       # Create an experiment ID based on timestamp
       #--------------------------------------------
-      dat_long$Date = as.Date(with(dat_long, paste(Year, Month, Day, sep="-")))
+      dat_long$Date = dat_long$Date = as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format="%Y %m %d %H %M %S")
       dat_long$Experiment_ID = sub("*.csv","",sub(".*/", "", input$namefile1))
       dat_long$Record = with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
       dat_long$Timestamp = ymd_hms(with(dat_long, 
@@ -584,7 +599,7 @@ server <- function(input, output) {
       
       # Create an experiment ID based on timestamp
       #--------------------------------------------
-      dat_long$Date = as.Date(with(dat_long, paste(Year, Month, Day, sep="-")))
+      dat_long$Date = dat_long$Date = as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format="%Y %m %d %H %M %S")
       dat_long$Experiment_ID = sub("*.csv","",sub(".*/", "", input$namefile1))
       dat_long$Record = with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
       dat_long$Timestamp = ymd_hms(with(dat_long, 
@@ -917,8 +932,60 @@ output$Plot33 <- renderPlot({
 })
 
 output$markdownoutput <- renderUI({
-  includeMarkdown("protocol.html")
+  includeHTML("protocol.html")
 })
+
+output$output_text1 <- renderText({
+  
+  completedata<-rbind(data1()[-nrow(data1()), ],data2()[-nrow(data2()),],data3()[-nrow(data3()), ])
+  
+  # Calculate all the variables described in the protocol.
+  completedata <- completedata %>%
+    mutate(Td_temp_diff = Temp_pot - Outdoor_temp) %>%
+    mutate(Pi_cooking_power = ((End_temp_pot - Start_temp_pot)*M*Cv)/600) %>%
+    mutate(Ps_std_cooking_power = Pi_cooking_power*(700/Solar_irr))
+  
+  # select only the data of pot 1
+  completedata<-completedata[completedata$Pot_ID==1,]
+  
+  linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff,data = completedata)
+  
+  summary(linear_model)
+  new <- data.frame(Td_temp_diff  = c(50))
+  output<-predict(linear_model, new, se.fit = TRUE)[1]
+  
+  paste("In this report the testing has been described of the prototype",unique(data1()$Cooker),
+        "on",data1()$TestDate[1], 
+        "The objective of the test was to evaluate the performance of this prototype. 
+        The results were analysed to determine the effectiveness of the solar cooker according to the ASAE Standard S-580.1 .",
+        "The value for the standardized cooking power was",output ,"W. It is computed for a temperature difference of 50 °C using the regression relationship found.
+          A plot of the relationship between standardized cooking power and temperature difference is shown.")
+})
+
+output$Plotlinearreg <- renderPlot({
+  
+  completedata<-rbind(data1()[-nrow(data1()), ],data2()[-nrow(data2()),],data3()[-nrow(data3()), ])
+  
+  # Calculate all the variables described in the protocol.
+  completedata <- completedata %>%
+    mutate(Td_temp_diff = Temp_pot - Outdoor_temp) %>%
+    mutate(Pi_cooking_power = ((End_temp_pot - Start_temp_pot)*M*Cv)/600) %>%
+    mutate(Ps_std_cooking_power = Pi_cooking_power*(700/Solar_irr))
+  
+  # select only the data of pot 1
+  completedata<-completedata[completedata$Pot_ID==1,]
+  
+  linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff,data = completedata)
+  
+  ggplot(data = completedata, 
+         aes(x = Td_temp_diff, y = Ps_std_cooking_power)) + 
+    geom_point() +
+    labs(title = "", 
+         x = "Temperature Difference (°C)", y = "Standardised Cooking Power") +
+    geom_smooth(method = "lm", se = TRUE, color = "blue")
+  
+})
+
 
 }
 
