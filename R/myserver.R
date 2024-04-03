@@ -773,24 +773,25 @@ server <- function(input, output, session) {
   #-----------------------------------------------------------------------------
   output$output_text1 <- renderText({
     completedata <- rbind(data1()[-nrow(data1()), ], data2()[-nrow(data2()), ], data3()[-nrow(data3()), ])
-    
-    N<-nrow(completedata)
+
+    N <- nrow(completedata)
 
     # Calculate all the variables described in the protocol.
     completedata <- completedata %>%
       mutate(Td_temp_diff = Temp_pot - Outdoor_temp) %>%
       mutate(Pi_cooking_power = ((End_temp_pot - Start_temp_pot) * M * Cv) / 600) %>%
       mutate(Ps_std_cooking_power = Pi_cooking_power * (700 / Solar_irr))
-    
+
     # standardise according to the protocol
-    completedata <- completedata %>% filter(Wind_speed<=2.5) %>%
-      filter(Outdoor_temp>=20 & Outdoor_temp<=35) %>%
-      filter(Solar_irr>=450 & Solar_irr<=1100) 
-      
+    completedata <- completedata %>%
+      filter(Wind_speed <= 2.5) %>%
+      filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
+      filter(Solar_irr >= 450 & Solar_irr <= 1100)
+
 
     # select only the data of pot 1
     completedata <- completedata[completedata$Pot_ID == 1, ]
-    
+
     # build a linear model
     linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff, data = completedata)
 
@@ -805,7 +806,7 @@ server <- function(input, output, session) {
         The results were analysed to determine the effectiveness of the solar cooker according to the ASAE Standard S-580.1 .",
       "The value for the standardized cooking power was", output, "W. It is computed for a temperature difference of 50 °C using the regression relationship found.
           A plot of the relationship between standardized cooking power and temperature difference is shown. A total of",
-      nrow(completedata),"interval of 10 minutes were used in the analysis and ",N,"intervals were removed according to the protocol."
+      nrow(completedata), "interval of 10 minutes were used in the analysis and ", N, "intervals were removed according to the protocol."
     )
   })
 
@@ -817,11 +818,12 @@ server <- function(input, output, session) {
       mutate(Td_temp_diff = Temp_pot - Outdoor_temp) %>%
       mutate(Pi_cooking_power = ((End_temp_pot - Start_temp_pot) * M * Cv) / 600) %>%
       mutate(Ps_std_cooking_power = Pi_cooking_power * (700 / Solar_irr))
-    
+
     # standardise according to the protocol
-    completedata <- completedata %>% filter(Wind_speed<=2.5) %>%
-      filter(Outdoor_temp>=20 & Outdoor_temp<=35) %>%
-      filter(Solar_irr>=450 & Solar_irr<=1100)
+    completedata <- completedata %>%
+      filter(Wind_speed <= 2.5) %>%
+      filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
+      filter(Solar_irr >= 450 & Solar_irr <= 1100)
 
     # select only the data of pot 1
     completedata <- completedata[completedata$Pot_ID == 1, ]
