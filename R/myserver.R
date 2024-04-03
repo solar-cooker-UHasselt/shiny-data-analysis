@@ -828,7 +828,7 @@ server <- function(input, output, session) {
       list(
         src = "uhasselt-standaard-wit.png",
         width = "85%",
-        style = "left: -10%; transform: translateX(10%);"
+        style = "left: -10%; transform: translateX(10%) translateY(5%);"
       )
     },
     deleteFile = F

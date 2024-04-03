@@ -259,7 +259,7 @@ ui <- dashboardPage(
         h3("Collaborators"),
         strong("Lowie Van Vyve"),
         h3("Links"),
-        a("GitHub Repository: ", "https://github.com/solar-cooker-UHasselt/shiny-data-analysis")
+        a("GitHub Repository", href = "https://github.com/solar-cooker-UHasselt/shiny-data-analysis", target = "_blank")
       )
     )
   )
