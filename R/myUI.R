@@ -219,6 +219,7 @@ ui <- dashboardPage(
         tabName = "perf",
         mainPanel(
           h2("Single measure of performance"),
+          strong("A small report will be generated after you uploaded the data for the 3 days."),
           textOutput("output_text1"),
           plotOutput("Plotlinearreg"),
           textOutput("statusperf")
