@@ -581,6 +581,16 @@ server <- function(input, output, session) {
       write.csv(data3(), file, row.names = FALSE)
     }
   )
+  
+  output$template_meta <- downloadHandler(
+    filename = function() {
+      "PEPUNILU2024XXXXXX.csv"
+    },
+    content = function(file) {
+      
+      file.copy("~/master_statistics1/Solar cooker/Application/shiny-data-analysis/R/PEPUNILU2024XXXXXX.csv", file)
+    }
+  )
 
   # Make some graphs for data exploration.
   #-------------------------------------------------------------------------------

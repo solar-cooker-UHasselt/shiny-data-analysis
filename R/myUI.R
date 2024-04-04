@@ -53,7 +53,7 @@ ui <- dashboardPage(
               textInput(
                 inputId = "namefile1",
                 label = "Enter the name of your dataset below",
-                placeholder = "Enter text to be used as plot title"
+                placeholder = "Number of your datafile"
               ),
               fileInput("file1", "Choose your teststation data file (.CSV)",
                 accept = c(
@@ -77,7 +77,7 @@ ui <- dashboardPage(
               textInput(
                 inputId = "namefile2",
                 label = "Enter the name of your dataset below",
-                placeholder = "Enter text to be used as plot title"
+                placeholder = "Number of your datafile"
               ),
               fileInput("file2", "Choose your teststation data file (.CSV)",
                 accept = c(
@@ -101,7 +101,7 @@ ui <- dashboardPage(
               textInput(
                 inputId = "namefile3",
                 label = "Enter the name of your dataset below",
-                placeholder = "Enter text to be used as plot title"
+                placeholder = "Number of your datafile"
               ),
               fileInput("file3", "Choose your teststation data file (.CSV)",
                 accept = c(
@@ -168,12 +168,14 @@ ui <- dashboardPage(
                     tags$li("Person performing the experiment: Operator"),
                     tags$li(" Latitude of the testing site: Latitude"),
                     tags$li("Longitude of the testing site: Longitude"),
-                    tags$li("Presence of absence of plastic bag around the pot: PlasticBag"),
+                    tags$li("Presence or absence of a plastic bag around the pot: PlasticBag"),
                     tags$li("Identification of data from the testing station: Datafile"),
                     tags$li("Picture of the device: CookerPic")
                   )
                 )
               ),
+              p("Download the template below as example. Change XXXXXX in PEPUNILU2024XXXXXX to the correct number of your datafile."),
+              downloadButton("template_meta", "Download"),
               collapsible = TRUE
             ),
             tags$hr()
