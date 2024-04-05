@@ -24,6 +24,7 @@ ui <- dashboardPage(
       menuItem("Single measure of performance", tabName = "perf", icon = icon("power-off")),
       menuItem("Survival analysis", tabName = "survival", icon = icon("clock")),
       menuItem("Protocol", tabName = "protocol", icon = icon("book")),
+      menuItem("Timeline", tabName = "timeline", icon = icon("timeline")),
       menuItem("Info", tabName = "info", icon = icon("circle-info"))
     ),
     imageOutput("logo_uhasselt")
@@ -252,7 +253,7 @@ ui <- dashboardPage(
         uiOutput("htmloutput")
       ),
 
-      # sixth TabPanel with extra subtabs for additional information
+      # Sixth TabPanel with extra subtabs for additional information
       #---------------------------------------------------------------------------
       tabItem(
         tabName = "info",
@@ -263,6 +264,16 @@ ui <- dashboardPage(
         strong("Lowie Van Vyve"),
         h3("Links"),
         a("GitHub Repository", href = "https://github.com/solar-cooker-UHasselt/shiny-data-analysis", target = "_blank")
+      ),
+      
+      # Seventh TabPanel for the timeline
+      #---------------------------------------------------------------------------
+      tabItem(
+        tabName="timeline",
+        h2("Project timeline"),
+        p("Last updated on April 05, 2024."),
+        strong("This timeline is under construction and not yet complete!"),
+        includeHTML("timeline.html")
       )
     )
   )
