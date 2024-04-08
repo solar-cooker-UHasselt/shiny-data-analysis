@@ -13,15 +13,15 @@ header-includes: \usepackage{amsmath}
 
 #### ASAE S580.1 JAN03 "Testing and Reporting Solar Cooker Performance protocol".
 
-This Standard specifies that test results be presented as cooking power, in Watts, normalized for ambient conditions, relative to the temperature difference between cooker contents and ambient air, both as a plot and as a regression equation for no fewer than 30 total observations over three different days.
+This Standard specifies that test results should be presented as cooking power, in Watts, normalized for ambient conditions, relative to the temperature difference between cooker contents and ambient air, both as a plot and as a regression equation for no fewer than 30 total observations over three different days.
 
 **Uncontrolled (Weather) Variables**
 
 _Average Wind._ Tests shall be conducted when average wind during the duration of the test is less than 1.0 m/s, measured at the elevation of the cooker being tested and within ten meters of it.
 
-_Maximum Wind._ Should the wind exceed 2.5 m/s for more than ten minutes the test data shall be discarded. Wind Shielding. If a wind shelter is required, 1) it shall be designed so as to not interfere with incoming total radiation and 2) the wind instrumentation shall be co-located with the cooker in the same wind shadow.
+_Maximum Wind._ Should the wind exceed 2.5 m/s for more than ten minutes the test data shall be discarded. If a wind shelter is required, it shall be designed so as to not interfere with incoming total radiation and the wind instrumentation shall be co-located with the cooker in the same wind shadow.
 
-_Ambient temperature._ Tests should be conducted when ambient temperatures are between 20 and 35 °C. Water temperature. Test data shall be recorded while cooking vessel contents (water) are at temperatures between 5 °C above ambient and 5 °C below local boiling temperature.
+_Ambient temperature._ Tests should be conducted when ambient temperatures are between 20 and 35 °C. Test data shall be recorded while cooking vessel contents (water) are at temperatures between 5 °C above ambient and 5 °C below local boiling temperature.
 
 _Insolation._ Available solar energy shall be measured in the plane perpendicular to direct beam radiation (the maximum reading) using a radiation pyranometer. Variation in measured insolation greater than 100 W/m2 during a ten-minute interval, or readings below 450 W/m2 or above 1100 W/m2 during the test shall render the test invalid. For convenience, the pyranometer may be fixed on the cooker at the average beam radiation zenith angle as calculated for the entire test period.
 
