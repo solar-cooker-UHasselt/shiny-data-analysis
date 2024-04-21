@@ -212,7 +212,7 @@ server <- function(input, output, session) {
     req(input$file2meta)
     req(input$namefile2)
 
-    dat_long <- read.csv(input$file1$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
+    dat_long <- read.csv(input$file2$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
     message(paste("Number of records: ", dim(dat_long)[1]))
 
@@ -236,7 +236,7 @@ server <- function(input, output, session) {
     # Create an experiment ID based on timestamp
     #--------------------------------------------
     dat_long$Date <- dat_long$Date <- as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format = "%Y %m %d %H %M %S")
-    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile1))
+    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile2))
     dat_long$Record <- with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
     dat_long$Timestamp <- ymd_hms(with(
       dat_long,
@@ -327,7 +327,7 @@ server <- function(input, output, session) {
     # Picture of the device: "metaData$CookerPic"                               #
     #############################################################################
 
-    metadata <- read.csv(input$file1meta$datapath, header = T, sep = ";", dec = ",", encoding = "latin1")
+    metadata <- read.csv(input$file2meta$datapath, header = T, sep = ";", dec = ",", encoding = "latin1")
     metadata <- metadata[order(metadata$Datafile, metadata$Pot_ID), ]
 
     # Link the metadata to the teststation data
@@ -392,7 +392,7 @@ server <- function(input, output, session) {
     req(input$file3meta)
     req(input$namefile3)
 
-    dat_long <- read.csv(input$file1$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
+    dat_long <- read.csv(input$file3$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
     message(paste("Number of records: ", dim(dat_long)[1]))
 
@@ -416,7 +416,7 @@ server <- function(input, output, session) {
     # Create an experiment ID based on timestamp
     #--------------------------------------------
     dat_long$Date <- dat_long$Date <- as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format = "%Y %m %d %H %M %S")
-    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile1))
+    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile3))
     dat_long$Record <- with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
     dat_long$Timestamp <- ymd_hms(with(
       dat_long,
@@ -507,7 +507,7 @@ server <- function(input, output, session) {
     # Picture of the device: "metaData$CookerPic"                               #
     #############################################################################
 
-    metadata <- read.csv(input$file1meta$datapath, header = T, sep = ";", dec = ",", encoding = "latin1")
+    metadata <- read.csv(input$file3meta$datapath, header = T, sep = ";", dec = ",", encoding = "latin1")
     metadata <- metadata[order(metadata$Datafile, metadata$Pot_ID), ]
 
     # Link the metadata to the teststation data
@@ -781,8 +781,11 @@ server <- function(input, output, session) {
   # Single measure of performance (combining data + standardising + linear reg)
   #-----------------------------------------------------------------------------
   output$output_text1 <- renderText({
-    completedata <- rbind(data1()[-nrow(data1()), ], data2()[-nrow(data2()), ], data3()[-nrow(data3()), ])
-
+    completedata <- rbind(data1(), data2(), data3())
+    
+    # select only the data of pot 1
+    completedata <- completedata[completedata$Pot_ID == 1, ]
+    
     N <- nrow(completedata)
 
     # Calculate all the variables described in the protocol.
@@ -797,16 +800,12 @@ server <- function(input, output, session) {
       filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
       filter(Solar_irr >= 450 & Solar_irr <= 1100)
 
-
-    # select only the data of pot 1
-    completedata <- completedata[completedata$Pot_ID == 1, ]
-
     # build a linear model
     linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff, data = completedata)
 
     summary(linear_model)
     new <- data.frame(Td_temp_diff = c(50))
-    output <- predict(linear_model, new, se.fit = TRUE)[1]
+    output <- round(unlist(predict(linear_model, new, se.fit = TRUE)[1]),2)
 
     paste(
       "In this report the testing has been described of the prototype", unique(completedata$Cooker),
@@ -815,7 +814,7 @@ server <- function(input, output, session) {
         The results were analysed to determine the effectiveness of the solar cooker according to the ASAE Standard S-580.1 .",
       "The value for the standardized cooking power was", output, "W. It is computed for a temperature difference of 50 °C using the regression relationship found.
           A plot of the relationship between standardized cooking power and temperature difference is shown. A total of",
-      nrow(completedata), "interval of 10 minutes were used in the analysis and ", N, "intervals were removed according to the protocol."
+      nrow(completedata), "intervals of 10 minutes were used in the analysis and ", N-nrow(completedata), "intervals were removed according to the protocol."
     )
   })
 

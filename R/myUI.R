@@ -223,9 +223,9 @@ ui <- dashboardPage(
         mainPanel(
           h2("Single measure of performance"),
           strong("A small report will be generated after you uploaded the data for the 3 days."),
+          tags$hr(),
           textOutput("output_text1"),
-          plotOutput("Plotlinearreg"),
-          textOutput("statusperf")
+          plotOutput("Plotlinearreg")
         )
       ),
 
