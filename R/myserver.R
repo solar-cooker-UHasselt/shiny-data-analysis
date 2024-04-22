@@ -30,7 +30,6 @@ server <- function(input, output, session) {
 
     req(input$file1)
     req(input$file1meta)
-    req(input$namefile1)
 
     dat_long <- read.csv(input$file1$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
@@ -56,7 +55,7 @@ server <- function(input, output, session) {
     # Create an experiment ID based on timestamp
     #--------------------------------------------
     dat_long$Date <- as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format = "%Y %m %d %H %M %S")
-    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile1))
+    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", sub(".csv$", "", basename(input$file1$name))))
     dat_long$Record <- with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
     dat_long$Timestamp <- ymd_hms(with(
       dat_long,
@@ -210,8 +209,7 @@ server <- function(input, output, session) {
 
     req(input$file2)
     req(input$file2meta)
-    req(input$namefile2)
-
+    
     dat_long <- read.csv(input$file2$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
     message(paste("Number of records: ", dim(dat_long)[1]))
@@ -236,7 +234,7 @@ server <- function(input, output, session) {
     # Create an experiment ID based on timestamp
     #--------------------------------------------
     dat_long$Date <- dat_long$Date <- as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format = "%Y %m %d %H %M %S")
-    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile2))
+    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", sub(".csv$", "", basename(input$file2$name))))
     dat_long$Record <- with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
     dat_long$Timestamp <- ymd_hms(with(
       dat_long,
@@ -390,7 +388,6 @@ server <- function(input, output, session) {
 
     req(input$file3)
     req(input$file3meta)
-    req(input$namefile3)
 
     dat_long <- read.csv(input$file3$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
@@ -416,7 +413,7 @@ server <- function(input, output, session) {
     # Create an experiment ID based on timestamp
     #--------------------------------------------
     dat_long$Date <- dat_long$Date <- as.POSIXct(paste(dat_long$Year, dat_long$Month, dat_long$Day, dat_long$Hour, dat_long$Minute, dat_long$Second), format = "%Y %m %d %H %M %S")
-    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", input$namefile3))
+    dat_long$Experiment_ID <- sub("*.csv", "", sub(".*/", "", sub(".csv$", "", basename(input$file3$name))))
     dat_long$Record <- with(dat_long, ave(Experiment_ID, Experiment_ID, FUN = seq_along))
     dat_long$Timestamp <- ymd_hms(with(
       dat_long,
@@ -557,7 +554,7 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------
   output$downloadData1 <- downloadHandler(
     filename = function() {
-      paste(input$namefile1, ".csv", sep = "")
+      paste(sub(".csv$", "", basename(input$file1$name)), ".csv", sep = "")
     },
     content = function(file) {
       write.csv(data1(), file, row.names = FALSE)
@@ -566,7 +563,7 @@ server <- function(input, output, session) {
 
   output$downloadData2 <- downloadHandler(
     filename = function() {
-      paste(input$namefile2, ".csv", sep = "")
+      paste(sub(".csv$", "", basename(input$file2$name)), ".csv", sep = "")
     },
     content = function(file) {
       write.csv(data2(), file, row.names = FALSE)
@@ -575,7 +572,7 @@ server <- function(input, output, session) {
 
   output$downloadData3 <- downloadHandler(
     filename = function() {
-      paste(input$namefile3, ".csv", sep = "")
+      paste(sub(".csv$", "", basename(input$file3$name)), ".csv", sep = "")
     },
     content = function(file) {
       write.csv(data3(), file, row.names = FALSE)
@@ -798,7 +795,8 @@ server <- function(input, output, session) {
     completedata <- completedata %>%
       filter(Wind_speed <= 2.5) %>%
       filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
-      filter(Solar_irr >= 450 & Solar_irr <= 1100)
+      filter(Solar_irr >= 450 & Solar_irr <= 1100)%>%
+      filter(Ps_std_cooking_power >= 0)
 
     # build a linear model
     linear_model <- lm(Ps_std_cooking_power ~ Td_temp_diff, data = completedata)
@@ -831,7 +829,8 @@ server <- function(input, output, session) {
     completedata <- completedata %>%
       filter(Wind_speed <= 2.5) %>%
       filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
-      filter(Solar_irr >= 450 & Solar_irr <= 1100)
+      filter(Solar_irr >= 450 & Solar_irr <= 1100)%>%
+      filter(Ps_std_cooking_power >= 0)
 
     # select only the data of pot 1
     completedata <- completedata[completedata$Pot_ID == 1, ]
@@ -866,7 +865,7 @@ server <- function(input, output, session) {
   #-------------------------------------------------------------------------------
 
   observe({
-    if (!is.null(input$file1) && !is.null(input$file2) && !is.null(input$file3) && !is.null(input$namefile1) && !is.null(input$namefile2) && !is.null(input$namefile3) && !is.null(input$file1meta) && !is.null(input$file2meta) && !is.null(input$file3meta)) {
+    if (!is.null(input$file1) && !is.null(input$file2) && !is.null(input$file3) && !is.null(input$file1meta) && !is.null(input$file2meta) && !is.null(input$file3meta)) {
       # Proceed with processing
       # Example: Read uploaded files
       # file1_data <- read.csv(input$file1$datapath)

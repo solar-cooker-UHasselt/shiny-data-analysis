@@ -51,11 +51,6 @@ ui <- dashboardPage(
             box(
               width = 4, solidHeader = TRUE,
               title = "Test day 1", status = "danger",
-              textInput(
-                inputId = "namefile1",
-                label = "Enter the name of your dataset below",
-                placeholder = "Number of your datafile"
-              ),
               fileInput("file1", "Choose your teststation data file (.CSV)",
                 accept = c(
                   "text/csv",
@@ -75,11 +70,6 @@ ui <- dashboardPage(
             box(
               width = 4, solidHeader = TRUE,
               title = "Test day 2", status = "danger",
-              textInput(
-                inputId = "namefile2",
-                label = "Enter the name of your dataset below",
-                placeholder = "Number of your datafile"
-              ),
               fileInput("file2", "Choose your teststation data file (.CSV)",
                 accept = c(
                   "text/csv",
@@ -99,11 +89,6 @@ ui <- dashboardPage(
             box(
               width = 4, solidHeader = TRUE,
               title = "Test day 3", status = "danger",
-              textInput(
-                inputId = "namefile3",
-                label = "Enter the name of your dataset below",
-                placeholder = "Number of your datafile"
-              ),
               fileInput("file3", "Choose your teststation data file (.CSV)",
                 accept = c(
                   "text/csv",
