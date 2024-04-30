@@ -22,10 +22,11 @@ RUN install2.r --error --skipinstalled \
     lubridate \
     ggplot2
 
-RUN mkdir -p /srv/shiny-server/ && \
-    chmod 777 /srv/shiny-server/
+RUN mkdir -p /srv/shiny-server/
 
-COPY R/* /srv/shiny-server/
+COPY R/ /srv/shiny-server/
+
+RUN chown -R shiny:shiny /srv/shiny-server/
 
 USER shiny
 

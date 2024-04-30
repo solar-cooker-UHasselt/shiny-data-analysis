@@ -209,7 +209,7 @@ server <- function(input, output, session) {
 
     req(input$file2)
     req(input$file2meta)
-    
+
     dat_long <- read.csv(input$file2$datapath, sep = ";", header = T, dec = ".", encoding = "latin1")
     message(paste("Test station data processed: "))
     message(paste("Number of records: ", dim(dat_long)[1]))
@@ -584,7 +584,7 @@ server <- function(input, output, session) {
       "PEPUNILU2024XXXXXX.csv"
     },
     content = function(file) {
-      file.copy("PEPUNILU2024XXXXXX.csv", file)
+      file.copy("www/PEPUNILU2024XXXXXX.csv", file)
     }
   )
 
@@ -771,18 +771,17 @@ server <- function(input, output, session) {
   })
 
   output$htmloutput <- renderUI({
-    rmarkdown::render("protocol.Rmd", output_file = "protocol.html")
-    includeHTML("protocol.html")
+    tags$iframe(src = "protocol.html", style = "width:100%; height:2200px; border:none;")
   })
 
   # Single measure of performance (combining data + standardising + linear reg)
   #-----------------------------------------------------------------------------
   output$output_text1 <- renderText({
     completedata <- rbind(data1(), data2(), data3())
-    
+
     # select only the data of pot 1
     completedata <- completedata[completedata$Pot_ID == 1, ]
-    
+
     N <- nrow(completedata)
 
     # Calculate all the variables described in the protocol.
@@ -795,7 +794,7 @@ server <- function(input, output, session) {
     completedata <- completedata %>%
       filter(Wind_speed <= 2.5) %>%
       filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
-      filter(Solar_irr >= 450 & Solar_irr <= 1100)%>%
+      filter(Solar_irr >= 450 & Solar_irr <= 1100) %>%
       filter(Ps_std_cooking_power >= 0)
 
     # build a linear model
@@ -803,7 +802,7 @@ server <- function(input, output, session) {
 
     summary(linear_model)
     new <- data.frame(Td_temp_diff = c(50))
-    output <- round(unlist(predict(linear_model, new, se.fit = TRUE)[1]),2)
+    output <- round(unlist(predict(linear_model, new, se.fit = TRUE)[1]), 2)
 
     paste(
       "In this report the testing has been described of the prototype", unique(completedata$Cooker),
@@ -812,7 +811,7 @@ server <- function(input, output, session) {
         The results were analysed to determine the effectiveness of the solar cooker according to the ASAE Standard S-580.1 .",
       "The value for the standardized cooking power was", output, "W. It is computed for a temperature difference of 50 °C using the regression relationship found.
           A plot of the relationship between standardized cooking power and temperature difference is shown. A total of",
-      nrow(completedata), "intervals of 10 minutes were used in the analysis and ", N-nrow(completedata), "intervals were removed according to the protocol."
+      nrow(completedata), "intervals of 10 minutes were used in the analysis and ", N - nrow(completedata), "intervals were removed according to the protocol."
     )
   })
 
@@ -829,7 +828,7 @@ server <- function(input, output, session) {
     completedata <- completedata %>%
       filter(Wind_speed <= 2.5) %>%
       filter(Outdoor_temp >= 20 & Outdoor_temp <= 35) %>%
-      filter(Solar_irr >= 450 & Solar_irr <= 1100)%>%
+      filter(Solar_irr >= 450 & Solar_irr <= 1100) %>%
       filter(Ps_std_cooking_power >= 0)
 
     # select only the data of pot 1
@@ -852,7 +851,7 @@ server <- function(input, output, session) {
   output$logo_uhasselt <- renderImage(
     {
       list(
-        src = "uhasselt-standaard-wit.png",
+        src = "www/uhasselt-standaard-wit.png",
         width = "85%",
         style = "left: -10%; transform: translateX(10%) translateY(5%);"
       )

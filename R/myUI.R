@@ -244,21 +244,20 @@ ui <- dashboardPage(
         tabName = "info",
         h2("Solar cooker Shiny App - Version 1"),
         h3("App Developers"),
-        strong("Jonas Meijerink (jonas.meijerink@student.uhasselt.be)"),
-        h3("Collaborators"),
+        strong("Jonas Meijerink (", a("jonas.meijerink@student.uhasselt.be", href = "mailto:jonas.meijerink@student.uhasselt.be"), ")"), h3("Collaborators"),
         strong("Lowie Van Vyve"),
         h3("Links"),
         a("GitHub Repository", href = "https://github.com/solar-cooker-UHasselt/shiny-data-analysis", target = "_blank")
       ),
-      
+
       # Seventh TabPanel for the timeline
       #---------------------------------------------------------------------------
       tabItem(
-        tabName="timeline",
+        tabName = "timeline",
         h2("Project timeline"),
         p("Last updated on April 05, 2024."),
         strong("This timeline is under construction and not yet complete!"),
-        includeHTML("timeline.html")
+        tags$iframe(src = "timeline.html", style = "width:100%; height:1350px; border:none;")
       )
     )
   )

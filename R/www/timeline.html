@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Timeline</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+  }
+  .container {
+    max-width: 800px; /* Adjust the maximum width as needed */
+    margin: 0 auto; /* Center the container horizontally */
+  }
+  .timeline {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .timeline-item {
+    border-left: 2px solid #ff0000; /* Change border color to red */
+    padding-left: 20px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -6px;
+    width: 12px;
+    height: 12px;
+    background-color: #ff0000; /* Change bullet point color to red */
+    border-radius: 50%;
+  }
+  .timeline-item .date {
+    color: #000; /* Change date text color to black */
+    margin-bottom: 5px;
+}
+
+.timeline-item .event {
+    color: #ff0000; /* Change event text color to red */
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+  .timeline-item .group {
+    font-style: italic;
+    color: #666;
+  }
+.timeline-item img {
+    max-width: 400px; /* Set maximum width for the images */
+    max-height: 300px; /* Set maximum height for the images */
+    margin-bottom: 20px;
+}
+</style>
+</head>
+<body>
+
+<ul class="timeline">
+    <li class="timeline-item">
+    <div class="event">First version of the statistical shiny app has been launched!</div>
+    <div class="date">March 31, 2024</div>
+    <div class="group">More information about this later.</div>
+    <img src="apppicture.png" alt="Image 3">
+  </li>
+  <li class="timeline-item">
+    <div class="event">Started building the box of the prototype!</div>
+    <div class="date">March 28, 2024</div>
+    <div class="group">More information about this later.</div>
+    <img src="prototype_building.jpg" alt="Image 2">
+  </li>
+  <li class="timeline-item">
+    <div class="event">Final design of the new box prototype is ready!</div>
+    <div class="date">March 19, 2024</div>
+    <div class="group">More information about this later.</div>
+    <img src="3dmodel.jpeg" alt="Image 1">
+  </li>
+  <li class="timeline-item">
+    <div class="event">Start solar cooker project 2024</div>
+    <div class="date">February 13, 2024</div>
+    <div class="group">More information about this later.</div>
+  </li>
+</ul>
+
+</body>
+</html>
