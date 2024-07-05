@@ -595,18 +595,29 @@ server <- function(input, output, session) {
 
     data <- original1() %>%
       mutate(datetime = as.POSIXct(paste(Year, Month, Day, Hour, Minute, Second), format = "%Y %m %d %H %M %S"))
-
+    
+    data$Temp_pot1[data$Temp_pot1 == "x"] <- as.numeric(0.001)
+    data$Temp_pot2[data$Temp_pot2 == "x"] <- as.numeric(0.001)
+    data$Temp_pot3[data$Temp_pot3 == "x"] <- as.numeric(0.001)
+    
+    data$Temp_pot1 <- as.numeric(data$Temp_pot1)
+    data$Temp_pot2 <- as.numeric(data$Temp_pot2)
+    data$Temp_pot3 <- as.numeric(data$Temp_pot3)
+    
     # Plot temperature vs. time
     ggplot(data, aes(x = datetime, y = Outdoor_temp)) +
-      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1 in red
+      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1
+      geom_line(aes(y = Temp_pot2, color = "Temp_pot2"), show.legend = TRUE) + # Add Temp_pot2
+      geom_line(aes(y = Temp_pot3, color = "Temp_pot3"), show.legend = TRUE) + # Add Temp_pot3
       geom_line(aes(color = "Outdoor_temp"), show.legend = TRUE) +
       labs(x = "Time", y = "Temperature (°C)", title = "Temperature vs. Time") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H:%M:%S") + # Adjust the breaks and labels as needed
+      scale_y_continuous()+
       scale_color_manual(
-        values = c("black", "red"),
-        labels = c("Outdoor temperature", "Temperature in pot 1")
+        values = c("black", "red","blue","purple"),
+        labels = c("Outdoor temperature", "Temperature in pot 1","Temperature in pot 2","Temperature in pot 3")
       ) # Define colors and labels
   })
 
@@ -656,17 +667,28 @@ server <- function(input, output, session) {
     data <- original2() %>%
       mutate(datetime = as.POSIXct(paste(Year, Month, Day, Hour, Minute, Second), format = "%Y %m %d %H %M %S"))
 
+    data$Temp_pot1[data$Temp_pot1 == "x"] <- as.numeric(0.001)
+    data$Temp_pot2[data$Temp_pot2 == "x"] <- as.numeric(0.001)
+    data$Temp_pot3[data$Temp_pot3 == "x"] <- as.numeric(0.001)
+    
+    data$Temp_pot1 <- as.numeric(data$Temp_pot1)
+    data$Temp_pot2 <- as.numeric(data$Temp_pot2)
+    data$Temp_pot3 <- as.numeric(data$Temp_pot3)
+    
     # Plot temperature vs. time
     ggplot(data, aes(x = datetime, y = Outdoor_temp)) +
-      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1 in red
+      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1
+      geom_line(aes(y = Temp_pot2, color = "Temp_pot2"), show.legend = TRUE) + # Add Temp_pot2
+      geom_line(aes(y = Temp_pot3, color = "Temp_pot3"), show.legend = TRUE) + # Add Temp_pot3
       geom_line(aes(color = "Outdoor_temp"), show.legend = TRUE) +
       labs(x = "Time", y = "Temperature (°C)", title = "Temperature vs. Time") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H:%M:%S") + # Adjust the breaks and labels as needed
+      scale_y_continuous()+
       scale_color_manual(
-        values = c("black", "red"),
-        labels = c("Outdoor temperature", "Temperature in pot 1")
+        values = c("black", "red","blue","purple"),
+        labels = c("Outdoor temperature", "Temperature in pot 1","Temperature in pot 2","Temperature in pot 3")
       ) # Define colors and labels
   })
 
@@ -715,18 +737,29 @@ server <- function(input, output, session) {
 
     data <- original3() %>%
       mutate(datetime = as.POSIXct(paste(Year, Month, Day, Hour, Minute, Second), format = "%Y %m %d %H %M %S"))
-
+    
+    data$Temp_pot1[data$Temp_pot1 == "x"] <- as.numeric(0.001)
+    data$Temp_pot2[data$Temp_pot2 == "x"] <- as.numeric(0.001)
+    data$Temp_pot3[data$Temp_pot3 == "x"] <- as.numeric(0.001)
+    
+    data$Temp_pot1 <- as.numeric(data$Temp_pot1)
+    data$Temp_pot2 <- as.numeric(data$Temp_pot2)
+    data$Temp_pot3 <- as.numeric(data$Temp_pot3)
+    
     # Plot temperature vs. time
     ggplot(data, aes(x = datetime, y = Outdoor_temp)) +
-      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1 in red
+      geom_line(aes(y = Temp_pot1, color = "Temp_pot1"), show.legend = TRUE) + # Add Temp_pot1
+      geom_line(aes(y = Temp_pot2, color = "Temp_pot2"), show.legend = TRUE) + # Add Temp_pot2
+      geom_line(aes(y = Temp_pot3, color = "Temp_pot3"), show.legend = TRUE) + # Add Temp_pot3
       geom_line(aes(color = "Outdoor_temp"), show.legend = TRUE) +
       labs(x = "Time", y = "Temperature (°C)", title = "Temperature vs. Time") +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
       scale_x_datetime(date_breaks = "1 hour", date_labels = "%H:%M:%S") + # Adjust the breaks and labels as needed
+      scale_y_continuous()+
       scale_color_manual(
-        values = c("black", "red"),
-        labels = c("Outdoor temperature", "Temperature in pot 1")
+        values = c("black", "red","blue","purple"),
+        labels = c("Outdoor temperature", "Temperature in pot 1","Temperature in pot 2","Temperature in pot 3")
       ) # Define colors and labels
   })
 
