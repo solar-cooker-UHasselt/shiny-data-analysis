@@ -238,8 +238,7 @@ ui <- dashboardPage(
       tabItem(
         tabName = "timeline",
         h2("Project timeline"),
-        p("Last updated on April 05, 2024."),
-        strong("This timeline is under construction and not yet complete!"),
+        p("Last updated on April 29, 2024."),
         tags$iframe(src = "timeline.html", style = "width:100%; height:1350px; border:none;")
       )
     )
