@@ -22,7 +22,6 @@ ui <- dashboardPage(
       menuItem("Upload files", tabName = "csv", icon = icon("upload")),
       menuItem("Graphs of teststation data", tabName = "graph", icon = icon("chart-simple")),
       menuItem("Single measure of performance", tabName = "perf", icon = icon("power-off")),
-      menuItem("Survival analysis", tabName = "survival", icon = icon("clock")),
       menuItem("Protocol", tabName = "protocol", icon = icon("book")),
       menuItem("Timeline", tabName = "timeline", icon = icon("timeline")),
       menuItem("Info", tabName = "info", icon = icon("circle-info"))
@@ -214,23 +213,7 @@ ui <- dashboardPage(
         )
       ),
 
-      # Fourth Tabpanel
-      #---------------------------------------------------------------------------
-      tabItem(
-        tabName = "survival",
-        mainPanel(
-          fluidRow(
-            box(
-              width = 12,
-              title = "title1", status = "danger", solidHeader = TRUE,
-              "under construction",
-              collapsible = TRUE
-            )
-          )
-        )
-      ),
-
-      # Fith TabPanel with extra subtabs for additional information
+      # Fourth TabPanel with extra subtabs for additional information
       #---------------------------------------------------------------------------
 
       tabItem(
